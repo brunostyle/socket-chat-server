@@ -8,6 +8,6 @@ export const generateJWT = async (uid) => {
         return token;
     } catch (error) {
         console.log(error);
-        throw new Error('No se pudo generar el token'); 
+        throw new Error('Failed to generate token'); 
     }
 }

@@ -11,7 +11,7 @@ export class Server {
         this.app  = express();
         this.port = process.env.PORT || 4000;
         this.server = http.createServer( this.app );
-        this.io = new Socket( this.server, { /* configuraciones */ } );
+        this.io = new Socket( this.server );
         DBConnection();
     }
 

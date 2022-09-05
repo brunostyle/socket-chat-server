@@ -1,41 +1,43 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { emailUserExist, validateField, validateJWT } from '../middlewares/index.js';
-import { register, login, renewToken} from '../controllers/auth.js';
+import { emailUserExist, existUserId, validateField, validateJWT } from '../middlewares/index.js';
+import { register, login, renewToken, updateUser } from '../controllers/auth.js';
 
 export const routerAuth = Router();
 
 routerAuth.post('/login', [
-   check('email', 'El email es requerida').not().isEmpty(),
-   check('email', 'El email no es valido').optional().trim().isEmail(),
-   check('password', 'La contraseña es requerida').not().isEmpty(),
+   check('email', 'The email is required').not().isEmpty(),
+   check('email', 'The email is not valid').optional().trim().isEmail(),
+   check('password', 'The password is required').not().isEmpty(),
    validateField
 ], login)
 
 routerAuth.post('/register', [
-   check('name', 'El nombre es requerido').not().isEmpty(),
-   check('name', 'El nombre debe ser un String').optional().trim().isString(),
-   check('email', 'El email es requerida').not().isEmpty(),
-   check('email', 'El email no es valido').optional().isEmail(),
+   check('name', 'The name is required').not().isEmpty(),
+   check('name', 'The name must be a String').optional().trim().isString(),
+   check('name', 'The name must be at least 3 characters').optional().isLength({min: 3}),
+   check('name', 'The Name must not have more than 20 characters').optional().isLength({max: 20}),
+   check('email', 'The email is required').not().isEmpty(),
+   check('email', 'The email is not valid').optional().trim().isEmail(),
    check('email').custom(emailUserExist),
-   check('password', 'La contraseña es requerida').not().isEmpty(),
-   check('password', 'La contraseña debe tener al menos 6 caracteres').optional().isLength({min: 6}),
-   check('password', 'La contraseña no debe tener mas de 20 caracteres').optional().isLength({max: 20}),
+   check('password', 'The password is required').not().isEmpty(),
+   check('password', 'The password must be at least 6 characters').optional().isLength({min: 6}),
+   check('password', 'The password must not have more than 20 characters').optional().isLength({max: 20}),
    validateField
 ], register)
 
-// import { User } from '../models/User.js';
-// routerAuth.get('/getUsers/:uid', async (req, res) => {
-//    const uid = req.params.uid;
-//    try {
-//       const users = await User
-//           .find()
-//           .where('_id').ne(uid)
-//           .sort('-online')
-//       res.json(users)
-//   } catch (error) {
-//       console.log(error);
-//   }
-// })
+routerAuth.put('/update/:uid', [
+   validateJWT,
+   check('uid', 'Not a valid mongo ID').isMongoId(),
+   check('uid').custom(existUserId),
+   check('name', 'The name is required').optional().not().isEmpty(),
+   check('name', 'The name must be a String').optional().trim().isString(),
+   check('name', 'The name must be at least 3 characters').optional().isLength({min: 3}),
+   check('name', 'The Name must not have more than 20 characters').optional().isLength({max: 20}),
+   check('email', 'The email is required').optional().not().isEmpty(),
+   check('email', 'The email is not valid').optional().trim().isEmail(),
+   check('email').optional().custom(emailUserExist),
+   validateField
+], updateUser)
 
 routerAuth.get('/renew', validateJWT, renewToken)

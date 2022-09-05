@@ -7,6 +7,6 @@ export const routerMessages = Router();
 
 routerMessages.get('/:from', [
    validateJWT,
-   check('from', 'El ID no es valido').isMongoId(),
+   check('from', 'Not a valid mongo ID').isMongoId(),
    validateField
 ], getMessages)
