@@ -12,14 +12,21 @@ export class Server {
         this.port = process.env.PORT || 4000;
         this.server = http.createServer( this.app );
         this.io = new Socket( this.server );
+        
         DBConnection();
+        this.middlewares();
+        this.routes();
+        this.configSockets();
     }
 
     middlewares() {
         this.app.use(express.json());
+        this.app.use(cors());
+    }
+    
+    routes() {
         this.app.use('/api/auth', routerAuth);
         this.app.use('/api/messages', routerMessages);
-        this.app.use(cors());
     }
 
     configSockets() {
@@ -27,10 +34,6 @@ export class Server {
     }
 
     execute() {
-        this.middlewares();
-        
-        this.configSockets();
-
         this.server.listen( this.port );
         console.log('Server in port:', this.port );
     }
