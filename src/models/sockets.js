@@ -14,7 +14,7 @@ export class Sockets {
             if ( !valid ) return socket.disconnect();
  
             //Saber que usuario esta activo por UID
-            const user = await userConnected( uid );
+            await userConnected( uid );
 
             //Emitir todos los usuarios conectados
             this.io.emit('list-users', await getUsers());
