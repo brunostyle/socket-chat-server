@@ -28,7 +28,7 @@ export const login = async (req, res) => {
       if (!passwordMatch) return res.status(400).json(['The email or password do not match']);
 
       const token = await generateJWT(userFound._id);
-      res.json({ uid: userFound._id, name: userFound.name, email, token });
+      res.json({ uid: userFound._id, name: userFound.name, email, token, img: userFound.img });
    } catch (error) {
       console.log(error);
    }
@@ -46,10 +46,10 @@ export const updateUser = async (req, res) => {
 }   
 
 export const renewToken = async (req, res) => {
-   const { _id, name, email } = req.userAuth;
+   const { _id, name, email, img } = req.userAuth;
    try {
       const token = await generateJWT(_id);
-      res.json({ uid: _id, name, email, token })
+      res.json({ uid: _id, name, email, token, img })
    } catch (error) {
       console.log(error);
    }
