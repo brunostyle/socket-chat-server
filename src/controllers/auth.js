@@ -1,7 +1,11 @@
 import { generateJWT, nameDestroy, validateExtension } from '../helpers/index.js';
 import { User } from '../models/index.js'
 import { v2 as cloudinary } from 'cloudinary';
-cloudinary.config(process.env.CLOUDINARY_URL);
+cloudinary.config({
+   cloud_name: "di18krsr5",
+   api_key: "561765883366447",
+   api_secret: "5AeQXpTzZxR0lc-LvLC-6Ux5S78"
+});
 
 export const register = async (req, res) => {
    const { name, email, password } = req.body;
@@ -54,7 +58,7 @@ export const renewToken = async (req, res) => {
 export const addImgUser = async (req, res) => {
    const { uid } = req.params;
     try {
-        validateExtension(req.files, res, ['jpg', 'png']);
+        validateExtension(req.files, res, ['jpg', 'jpeg', 'png']);
         const user = await User.findById(uid);
         if(user.img) {
             const name = nameDestroy(user.img);
