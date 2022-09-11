@@ -1,6 +1,7 @@
-import express  from 'express';
-import http     from 'http';
-import cors     from 'cors';
+import fileupload from 'express-fileupload';
+import express    from 'express';
+import http       from 'http';
+import cors       from 'cors';
 import { Server as Socket } from 'socket.io';
 import { Sockets }  from './sockets.js';
 import { DBConnection }  from '../database/config.js';
@@ -22,6 +23,7 @@ export class Server {
     middlewares() {
         this.app.use(express.json());
         this.app.use(cors());
+        this.app.use(fileupload({useTempFiles: true, tempFileDir: '/tmp/'}));
     }
     
     routes() {

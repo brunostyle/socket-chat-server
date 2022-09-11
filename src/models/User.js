@@ -16,6 +16,9 @@ const userSchema = new Schema({
       type: String,
       required: true
    },
+   img: {
+      type: String
+   },
    online: {
       type: Boolean,
       default: false

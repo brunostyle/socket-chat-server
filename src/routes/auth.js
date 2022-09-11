@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { emailUserExist, existUserId, validateField, validateJWT } from '../middlewares/index.js';
-import { register, login, renewToken, updateUser } from '../controllers/auth.js';
+import { emailUserExist, existUserId, validateField, validateFile, validateJWT } from '../middlewares/index.js';
+import { register, login, renewToken, updateUser, addImgUser } from '../controllers/auth.js';
 
 export const routerAuth = Router();
 
@@ -39,5 +39,13 @@ routerAuth.put('/update/:uid', [
    check('email').optional().custom(emailUserExist),
    validateField
 ], updateUser)
+
+routerAuth.post('/update/img/:uid', [
+   validateJWT,
+   validateFile,
+   check('uid', 'Not a valid mongo ID').isMongoId(),
+   check('uid').custom(existUserId),
+   validateField
+], addImgUser)
 
 routerAuth.get('/renew', validateJWT, renewToken)
